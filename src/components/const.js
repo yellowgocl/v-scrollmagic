@@ -40,7 +40,7 @@ const Options = {
     controller: {
         container: window,
         vertical: true,
-        globalSceneOptions: {},
+        /* globalSceneOptions: {}, */
         loglevel: LogLevel.warnings,
         refreshInterval: 100
     },

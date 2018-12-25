@@ -10,6 +10,7 @@ class Scene extends Base {
         super(el, binding, vnode, Const.Models.Scene)
     }
     getValue (old) {
+        console.info(Utils.getSceneOption(this.el, this.binding, this.vnode))
         return this.value || new Const.ScrollMagic.Scene(Utils.getSceneOption(this.el, this.binding, this.vnode))
     }
     canUpdate (el, binding, vnode) {
@@ -28,6 +29,9 @@ class Scene extends Base {
         }
     }
     update (el, binding, vnode) {
+        el = this.el || el
+        binding = this.binding || binding
+        vnode = this.vnode || vnode
         super.update(el, binding, vnode)
         if (!this.getContext()) {
             console.error('be sure to set v-scrollmagic-controller directive in any element')
@@ -39,7 +43,6 @@ class Scene extends Base {
             this.triggerElement = Utils.getTriggerElement(el, binding, vnode)
             this.triggerHook = Utils.getTriggerHook(el, binding, vnode)
             this.value.addTo(this.getContext().value)
-            console.info(this.triggerElement)
             this.updateEvents(vnode)
         }
     }

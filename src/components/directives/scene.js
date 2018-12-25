@@ -5,8 +5,7 @@ export default {
     bind (el, binding, vnode) {
     },
     inserted (el, binding, vnode) {
-        let instance = new Scene(el, binding, vnode)
-        instance.init()
+        new Scene(el, binding, vnode).init()
         // console.info(instance.getContext())
     },
     update (el, binding, vnode) {

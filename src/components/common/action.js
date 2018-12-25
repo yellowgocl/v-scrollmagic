@@ -23,12 +23,13 @@ class Action extends Base {
             let _model = Const.Models
             if (_model.Pin === this.model) {
                 this.enabled ? _scene.setPin.apply(_scene, v) : _scene.removePin.apply(_scene, true)
+                _scene.update(true)
             } else if (_model.ClassToggle === this.model) {
                 this.enabled ? _scene.setClassToggle.apply(_scene, v) : _scene.removeClassToggle.apply(_scene, true)
             } else if (_model.Tween === this.model) {
                 // console.info(v, this.value)
                 if (_scene.setTween) {
-                    this.enabled ? _scene.setTween.apply(_scene, v) : _scene.removeTween.apply(_scene, true)
+                    this.enabled ? (v && _scene.setTween.apply(_scene, v)) : _scene.removeTween.apply(_scene, true)
                 } else {
                     console.error('make sure you set "tween" with true for lib option. "Vue.use(vScrollmagic, { tween: true })"')
                 }

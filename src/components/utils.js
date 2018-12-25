@@ -62,8 +62,6 @@ const _parseSceneOption = (el, binding, vnode, option = {}) => {
     let result = option
     if (binding.modifiers.start || binding.modifiers.end) {
         result.triggerHook = binding.modifiers.start ? 'onEnter' : 'onLeave'
-    } else {
-        result.triggerHook = getTriggerHook(el, binding, vnode)
     }
     return result
 }
@@ -103,7 +101,7 @@ export const getTriggerElement = (el, binding, vnode) => {
     return result
 }
 export const getTriggerHook = (el, binding, vnode) => {
-    let result = getAttrsValue(vnode, 'scrollmagic-trigger-hook', 0.5)
+    let result = getAttrsValue(vnode, 'scrollmagic-trigger-hook')
     return result
 }
 
@@ -135,7 +133,7 @@ const _getCssToggle = (el, binding, vnode) => {
     }
 }
 const _getTween = (el, binding, vnode) => {
-    let value = binding.value || {}
+    let value = binding.value
     if (isArray(value)) {
         return value
     } else if (isObject(value)) {

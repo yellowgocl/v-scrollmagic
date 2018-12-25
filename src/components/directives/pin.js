@@ -7,9 +7,12 @@ export default {
     },
     inserted (el, binding, vnode) {
         Vue.nextTick(() => {
-            let instance = new Pin(el, binding, vnode)
-            instance.init()
+            new Pin(el, binding, vnode).init()
         })
+    },
+    update (el, binding, vnode) {
+        let self = Utils.getSelf(el, binding, vnode)
+        self.update(el, binding, vnode)
     },
     unbind (el, binding, vnode) {
         let self = Utils.getSelf(el, binding, vnode)
