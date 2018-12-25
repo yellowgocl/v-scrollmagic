@@ -19,7 +19,7 @@ export default {
     data () {
         return {
             options: Object.keys(Examples),
-            selectedOption: Object.keys(Examples)[3]
+            selectedOption: Object.keys(Examples)[4]
         }
     },
     filters: {
@@ -47,5 +47,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  width: 100%;
+}
+html body {
+    width: 100%;
 }
 </style>

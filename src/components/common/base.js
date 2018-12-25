@@ -37,7 +37,7 @@ class Base {
     update (el, binding, vnode) {
         this.updateDirectiveValue(el, binding, vnode)
         this.enabled = Utils.getEnabled(el, binding, vnode)
-        this.canUpdate(el, binding, vnode)
+        return this.canUpdate(el, binding, vnode)
     }
     updateDirectiveValue (el, binding, vnode) {
         this._el = el

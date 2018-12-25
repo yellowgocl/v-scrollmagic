@@ -39,6 +39,7 @@ class Scene extends Base {
             this.triggerElement = Utils.getTriggerElement(el, binding, vnode)
             this.triggerHook = Utils.getTriggerHook(el, binding, vnode)
             this.value.addTo(this.getContext().value)
+            console.info(this.triggerElement)
             this.updateEvents(vnode)
         }
     }

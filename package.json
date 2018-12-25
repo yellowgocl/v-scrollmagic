@@ -7,6 +7,11 @@
     "bundle": "vue-cli-service build --target lib --name v-scrollmagic ./src/components/index.js",
     "lint": "vue-cli-service lint"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yellowgocl/v-scrollmagic.git"
+  },
+  "license": "(MIT OR GPL-3.0+)",
   "main": "./dist/v-scrollmagic.common.js",
   "files": [
     "dist/*",

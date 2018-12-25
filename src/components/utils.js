@@ -76,7 +76,6 @@ export const getControllerOption = (el, binding, vnode) => {
     if (binding.modifiers.horizontal) {
         result.vertical = false
     }
-    console.info(result)
     result.globalSceneOptions = _parseSceneOption(el, binding, vnode, result.globalSceneOptions)
     return result
 }
@@ -104,7 +103,7 @@ export const getTriggerElement = (el, binding, vnode) => {
     return result
 }
 export const getTriggerHook = (el, binding, vnode) => {
-    let result = getAttrsValue(vnode, 'scrollmagic-trigger-hook', 0)
+    let result = getAttrsValue(vnode, 'scrollmagic-trigger-hook', 0.5)
     return result
 }
 

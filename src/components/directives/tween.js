@@ -12,6 +12,7 @@ export default {
     },
     update (el, binding, vnode) {
         let self = Utils.getSelf(el, binding, vnode)
+        console.info(el)
         self.update(el, binding, vnode)
     },
     unbind (el, binding, vnode) {
