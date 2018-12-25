@@ -1,13 +1,25 @@
 {
   "name": "v-scrollmagic",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.2",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "bundle": "vue-cli-service build --target lib --name v-scrollmagic ./src/components/index.js",
     "lint": "vue-cli-service lint"
   },
+  "main": "./dist/v-scrollmagic.common.js",
+  "files": [
+    "dist/*",
+    "src/components/*",
+    "src/assets/*",
+    "public/*",
+    "*.json",
+    "*.js"
+  ],
   "dependencies": {
+    "gsap": "^2.0.2",
+    "lodash": "^4.17.4",
+    "scrollmagic": "^2.0.6",
     "vue": "^2.5.17"
   },
   "devDependencies": {
@@ -29,7 +41,15 @@
       "plugin:vue/essential",
       "@vue/standard"
     ],
-    "rules": {},
+    "rules": {
+      "arrow-parens": 0,
+      "generator-star-spacing": 0,
+      "allowIndentationTabs": true,
+      "indent": [
+        "error",
+        4
+      ]
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }

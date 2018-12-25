@@ -1,18 +1,41 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <select name="examples" id="examples" v-model='selectedOption'>
+        <option
+          v-for='(item, index) in options'
+          :key='index'
+          :value='item | camelCase'>{{item}}
+        </option>
+      </select>
+      <component :is='componentName'></component>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import * as Examples from './examples'
+import { camelCase } from 'lodash'
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
+    name: 'app',
+    data () {
+        return {
+            options: Object.keys(Examples),
+            selectedOption: Object.keys(Examples)[3]
+        }
+    },
+    filters: {
+        camelCase (v) {
+            return camelCase(v)
+        }
+    },
+    computed: {
+        componentName () {
+            return camelCase(this.selectedOption)
+        }
+    },
+    components: { ...Examples },
+    created () {
+        console.info(process.env)
+    }
 }
 </script>
 
