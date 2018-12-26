@@ -10,7 +10,6 @@ class Scene extends Base {
         super(el, binding, vnode, Const.Models.Scene)
     }
     getValue (old) {
-        console.info(Utils.getSceneOption(this.el, this.binding, this.vnode))
         return this.value || new Const.ScrollMagic.Scene(Utils.getSceneOption(this.el, this.binding, this.vnode))
     }
     canUpdate (el, binding, vnode) {

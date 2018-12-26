@@ -11,8 +11,10 @@ export default {
         })
     },
     update (el, binding, vnode) {
-        let self = Utils.getSelf(el, binding, vnode)
-        self.update(el, binding, vnode)
+        Vue.nextTick(() => {
+            let self = Utils.getSelf(el, binding, vnode)
+            self && self.update(el, binding, vnode)
+        })
     },
     unbind (el, binding, vnode) {
         let self = Utils.getSelf(el, binding, vnode)

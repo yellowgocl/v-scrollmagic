@@ -1,7 +1,6 @@
 <template>
-    <div class="c--container" v-scrollmagic-controller>
-        <div class="container"
-            id='container'
+    <div class="c--container viewport" v-scrollmagic-controller>
+        <div class="container viewport"
             v-scrollmagic-scene.end.self='{ duration: "500%" }'
             v-scrollmagic-tween='tween'
             v-scrollmagic-pin>
@@ -20,7 +19,6 @@
     </div>
 </template>
 <script>
-/* import { ScrollMagic } from '../components/const' */
 import { TimelineMax } from 'gsap'
 export default {
     data () {
@@ -36,7 +34,6 @@ export default {
         }
     },
     mounted () {
-        /* let controller = new ScrollMagic.Controller() */
         this.tween = new TimelineMax()
             .to('#content', 0.5, { z: -150 })
             .to('#content', 1, { x: '-25%' })
@@ -47,26 +44,18 @@ export default {
             .to('#content', 0.5, { z: -150, delay: 1 })
             .to('#content', 1, { x: '-75%' })
             .to('#content', 0.5, { z: 0 })
-        /* let scene = new ScrollMagic.Scene({ triggerElement: '#container', triggerHook: 'onLeave', duration: '500%' })
-            .setPin('#container')
-            .setTween(tween)
-            .addTo(controller) */
     }
 }
 </script>
 <style scoped>
-.spacer {
-    height: 1000px;
-}
-.c--container {
+.viewport {
     width: 100%;
     height: 100%;
+}
+.c--container {
     font-size: 2rem;
 }
 .container {
-    height: 100%;
-    width: 100%;
-    min-height: 100%;
     overflow: hidden;
     color: white;
     text-align: center;
@@ -75,7 +64,6 @@ export default {
 .content {
     height: 100%;
     width: 400%;
-    min-height: 100%;
 }
 .panel {
     height: 100%;
@@ -87,6 +75,7 @@ b {
     display: block;
     overflow: visible;
     top: 50%;
+    margin: -5% 0
 }
 .green {
     background-color: green;

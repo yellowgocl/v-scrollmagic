@@ -56,6 +56,7 @@ export const getSelfName = (el, binding, vnode) => {
 }
 export const getSelf = (el, binding, vnode) => {
     let name = getSelfName(el, binding, vnode)
+    // console.info(el.dataset, name, vnode.context[name])
     return vnode.context[name]
 }
 const _parseSceneOption = (el, binding, vnode, option = {}) => {

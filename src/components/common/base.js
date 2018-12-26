@@ -20,10 +20,10 @@ class Base {
         this.updateInstanceName()
     }
     unbind (el, binding, vnode) {
-        this.updateDirectiveValue()
         this._destroyed = true
         delete vnode.context[Utils.getSelfName(el, binding, vnode)]
         delete el.dataset[this.model]
+        this.updateDirectiveValue()
     }
     canUpdate (el, binding, vnode) {
         const oldValue = this.value

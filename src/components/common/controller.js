@@ -10,7 +10,6 @@ class Controller extends Base {
     }
     update (el, binding, vnode) {
         let result = super.update(el, binding, vnode)
-        console.info(result)
         this.value && this.value.update()
         return result
     }
