@@ -20,10 +20,9 @@
     </div>
 </template>
 <script>
-import ScrollMagic from 'ScrollMagic'
 export default {
     data () {
-        return  {
+        return {
             state: 'unpinted',
             data: [
                 { triggerElement: '#trigger', duration: 150, offset: 0 },

@@ -1,102 +1,160 @@
+import { isString, isObject, isArray, uniqueId, map, isEqual } from 'lodash'
 import * as Utils from '../utils'
-import { isEqual } from 'lodash'
+import * as Const from '../const'
 import Vue from 'vue'
-
-class Base {
-    _el
-    _binding
-    _vnode
-    _model
+export default class Base {
     _value
-    _destroyed
-    _enabled = true
+    _name
+    _parent
+    _sourceValue
+    _oldValue
+    _children = new Map()
+    constructor (name, value) {
+        // this.reset()
+        this.name = name
+        this.value = value
+    }
     get debug () {
         return Vue.SCROLLMAGIC_DEBUG
     }
-    constructor (el, binding, vnode, model) {
-        this._model = model || 'vScrollmagicDirective'
-        this._destroyed = false
-        this.updateDirectiveValue(el, binding, vnode)
-        this.updateInstanceName()
+    set parent (value) {
+        this._parent = value
     }
-    unbind (el, binding, vnode) {
-        this._destroyed = true
-        delete vnode.context[Utils.getSelfName(el, binding, vnode)]
-        delete el.dataset[this.model]
-        this.updateDirectiveValue()
+    get parent () {
+        return this._parent
     }
-    canUpdate (el, binding, vnode) {
-        const oldValue = this.value
-        const tempValue = this.getValue(el, binding, vnode, oldValue)
-        let result = isEqual(oldValue, tempValue)
-        if (!result) {
-            this._value = tempValue
-        }
-        return result
-    }
-    update (el, binding, vnode) {
-        this.updateDirectiveValue(el, binding, vnode)
-        this.enabled = Utils.getEnabled(el, binding, vnode)
-        return this.canUpdate(el, binding, vnode)
-    }
-    updateDirectiveValue (el, binding, vnode) {
-        this._el = el
-        this._binding = binding
-        this._vnode = vnode
-    }
-    init () {
-        this.update(this.el, this.binding, this.vnode)
-    }
-    getValue (oldValue) {
-        return null
-    }
-    _getInstanceName (el, binding, vnode) {
-        return Utils.getInstanceName(el, binding, vnode)
-    }
-    updateInstanceName (newName) {
-        if (newName && this.el) {
-            this.el.dataset[this.model] = newName
-        }
-        let result = Utils.getSelfName(this.el, this.binding, this.vnode)
-        if (!result) {
-            result = this._getInstanceName(this.el, this.binding, this.vnode)
-            if (this.el) {
-                this.el.dataset[this.model] = result
-                this.vnode.context[result] = this
-            }
-        }
-        return result
-    }
-    get instanceName () {
-        return this.updateInstanceName()
-    }
-    get model () {
-        return this._model
-    }
-    get el () {
-        return this._el
-    }
-    get binding () {
-        return this._binding
-    }
-    get vnode () {
-        return this._vnode
+    set value (value) {
+        let temp = value
+        this._value = this.parseValue(value, this._sourceValue)
+        this._oldValue = this._sourceValue
+        this._sourceValue = temp
     }
     get value () {
         return this._value
     }
-    get isDestory () {
-        return this._destroyed
+    get oldValue () {
+        return this._oldValue
     }
-    set enabled (val) {
-        this._enabled = val
+    get sourceValue () {
+        return this._sourceValue
     }
-    get enabled () {
-        return this._enabled
+    set name (value) {
+        this._name = value
     }
-    getContext () {
-        return null
+    get name () {
+        return this._name
+    }
+    parseValue (value) {
+        return value
+    }
+    reset () {
+        this._value = undefined
+        this.name = undefined
+        this._parent = undefined
+        this._sourceValue = undefined
+        this._oldValue = undefined
+        this._children.clear()
+    }
+    has (key) {
+        return this._children.has(key)
+    }
+    get (key) {
+        return this._children.get(key)
+    }
+    beforeAdd (child, name, replace) {
+        return true
+    }
+    afterAdd (child, name, replace) {
+        child.name = name
+        this._children.set(name, child)
+        child.parent = this
+        return true
+    }
+    _addChild (child, option, replace = true) {
+        let result = false
+        if (child) {
+            let name
+            if (option) {
+                if (isObject(option)) {
+                    name = option.name
+                    replace = option.replace
+                }
+                if (!name) {
+                    name = isString(option) ? option || child.name : uniqueId('_vScrollmagicObject_')
+                }
+            } else {
+                name = child.name || uniqueId('_vScrollmagicObject_')
+            }
+            result = this.beforeAdd(child, name, replace)
+            if (result) {
+                result = this.afterAdd(child, name, replace)
+            }
+        }
+        return result
+    }
+    add (child, option, replace = true) {
+        let result = false
+        if (isArray(child)) {
+            map(child, (v, k) => v && this._addChild(v, v.name, v.replace || replace))
+        } else {
+            this._addChild(child, option, replace)
+        }
+        return result
+    }
+    destroyChild (child) {
+        return !!child
+    }
+    delete (key) {
+        let child = this.get(key)
+        if (child) {
+            this.destroyChild(child) && this._children.delete(key)
+        }
+        return child
+    }
+    inserted (el, binding, vnode) {
+        this.update(el, binding, vnode)
+    }
+
+    update (el, binding, vnode) {
+        if (isEqual(this.oldValue, this.sourceValue)) {
+            return
+        }
+        let mode = Utils.getModelName(el, binding, vnode)
+        let reset = Utils.getReset(el, binding, vnode)
+        let parentValue = this.parent && this.parent.value
+        let enabled = Utils.getEnabled(el, binding, vnode)
+        switch (mode) {
+        case Const.Models.Controller:
+            this.value.update(reset)
+            break
+        case Const.Models.Scene:
+            this.value.update(reset)
+            break
+        case Const.Models.Pin:
+            enabled ? parentValue.setPin.apply(parentValue, this.value) : parentValue.removePin.apply(parentValue, reset)
+            break
+        case Const.Models.ClassToggle:
+            enabled ? parentValue.setClassToggle.apply(parentValue, this.value) : parentValue.removeClassToggle.apply(parentValue, reset)
+            break
+        case Const.Models.Tween:
+            let tweenChanges = Utils.getTweenChanges(el, binding, vnode)
+            if (parentValue.setTween) {
+                if (enabled) {
+                    parentValue.setTween.apply(parentValue, this.value)
+                    !isEqual(tweenChanges, parentValue.tweenChanges.apply(parentValue)) && parentValue.tweenChanges.apply(parentValue, tweenChanges)
+                } else {
+                    parentValue.removeTween.apply(parentValue, reset)
+                }
+            } else {
+                console.error('make sure you set "tween" with true for lib option. "Vue.use(vScrollmagic, { tween: true })"')
+            }
+            break
+        }
+    }
+    unbind (el, binding, vnode) {
+        // this._children.forEach((v, k) => this.delete(k))
+        this.reset()
+        let model = Utils.getModelName(el, binding, vnode)
+        delete el.dataset[model]
     }
 }
-
-export default Base

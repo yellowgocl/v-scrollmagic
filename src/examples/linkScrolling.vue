@@ -38,8 +38,8 @@ export default {
                 { id: 'bottom' }
             ],
             sceneOption: {
-                triggerElement: "#top",
-                duration: 200,
+                triggerElement: '#top',
+                duration: 200
             },
             tween: null
         }

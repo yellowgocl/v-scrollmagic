@@ -1,24 +1,30 @@
-
-import { Pin } from '../common'
-import Vue from 'vue'
-import * as Utils from '../utils'
+import { Builder } from '../common'
+// import Context from '../context'
+// import { getOwnControllerName, getInstanceName } from '../utils'
 export default {
     bind (el, binding, vnode) {
+        // Builder.getAction(el, binding, vnode)
     },
     inserted (el, binding, vnode) {
-        // console.info('pin: insert:', el)
-        Vue.nextTick(() => {
-            new Pin(el, binding, vnode).init()
-        })
+        Builder.getAction(el, binding, vnode).inserted(el, binding, vnode)
+        // console.info(Builder.getAction(el, binding, vnode))
+        // console.info(Builder.getScene(el, binding, vnode).parent)
+        // new Scene(el, binding, vnode).update(el, binding, vnode)
     },
-    /* update (el, binding, vnode) {
-        Vue.nextTick(() => {
-            let self = Utils.getSelf(el, binding, vnode)
-            self && self.update(el, binding, vnode)
-        })
-    }, */
+    update (el, binding, vnode) {
+        Builder.getAction(el, binding, vnode).update(el, binding, vnode)
+        /* Context.getInstance().getScene(
+            getInstanceName(el, binding, vnode),
+            getOwnControllerName(el, binding, vnode))
+            .update(el, binding, vnode) */
+    },
     unbind (el, binding, vnode) {
-        let self = Utils.getSelf(el, binding, vnode)
-        self && self.unbind(el, binding, vnode)
+        let act = Builder.getAction(el, binding, vnode)
+        act && act.unbind(el, binding, vnode)
+        // Builder.getAction(el, binding, vnode).unbind(el, binding, vnode)
+        /*  Context.getInstance().getScene(
+            getInstanceName(el, binding, vnode),
+            getOwnControllerName(el, binding, vnode))
+            .unbind(el, binding, vnode) */
     }
 }

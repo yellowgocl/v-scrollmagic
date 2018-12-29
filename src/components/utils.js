@@ -1,5 +1,5 @@
 import * as Const from './const'
-import { camelCase, uniqueId, assign, findIndex, isString, isObject, isBoolean, isArray } from 'lodash'
+import { camelCase, uniqueId, findIndex, isArray, isObject, isBoolean, isString, assign } from 'lodash'
 export const emitEvent = (vnode, name, data) => {
     const handlers = (vnode.data && vnode.data.on) ||
         (vnode.componentOptions && vnode.componentOptions.listeners)
@@ -7,15 +7,12 @@ export const emitEvent = (vnode, name, data) => {
         handlers[name].fns(data)
     }
 }
-export const getAttrsValue = (vnode, name, defaultValue, defaultIsKey = false) => {
-    let result = !defaultIsKey ? defaultValue : null
+export const getAttrsValue = (vnode, name, defaultValue) => {
+    let result = defaultValue
     if (vnode && vnode.data.attrs) {
         let attrs = vnode.data.attrs
         if (attrs) {
-            result = attrs[name] ||
-                attrs[camelCase(name)] ||
-                (defaultIsKey ? attrs[defaultValue] ||
-                    attrs[camelCase(defaultValue)] : defaultValue)
+            result = attrs[name] || attrs[camelCase(name)] || defaultValue
         }
     }
     return result
@@ -23,41 +20,30 @@ export const getAttrsValue = (vnode, name, defaultValue, defaultIsKey = false) =
 export const isController = (el, binding, vnode) => {
     return findIndex(vnode.data.directives, ['name', 'scrollmagic-controller']) >= 0
 }
-export const getControllerName = (el, binding, vnode) => {
-    let result = binding.arg
-    if (!result) {
-        result = getInstanceName(el, binding, vnode, false) || Const.Models.Controller
+export const getInstanceName = (el, binding, vnode, defaultValue, key) => {
+    let model = getModelName(el, binding, vnode)
+    if (!el.dataset[model]) {
+        el.dataset[model] = createInstanceName(el, binding, vnode, defaultValue, key)
     }
-    return result
+    return el.dataset[model]
 }
-export const getSceneName = (el, binding, vnode) => {
-    let result = binding.arg
-    if (!result) {
-        result = getInstanceName(el, binding, vnode, false, false, 'scene') || el.dataset[Const.Models.Scene]
-    }
-
-    return result
+export const cleanInstanceName = (el, binding, vnode) => {
+    let model = getModelName(el, binding, vnode)
+    let flag = !!el.dataset[model]
+    delete el.dataset[model]
+    return flag
 }
-export const getInstanceName = (el, binding, vnode, defaultValue, defaultIsKey, key = 'instance-name') => {
-    let value = getAttrsValue(vnode, key, defaultValue, defaultIsKey)
+export const createInstanceName = (el, binding, vnode, defaultValue = '__autoCreate__', key = 'vscrollmagic-name') => {
+    let value = getAttrsValue(vnode, key)
     let result = null
     if (value) {
         result = value
     } else if (isController(el, binding, vnode) && el.id) {
         result = el.id
-    } else if (defaultValue !== false) {
-        result = uniqueId('scrollmagic-directives-instance-')
+    } else {
+        result = defaultValue === '__autoCreate__' ? uniqueId('scrollmagic-directives-instance-') : defaultValue
     }
     return result
-}
-export const getSelfName = (el, binding, vnode) => {
-    let key = getActionModel(el, binding, vnode)
-    return el.dataset[key]
-}
-export const getSelf = (el, binding, vnode) => {
-    let name = getSelfName(el, binding, vnode)
-    // console.info(el.dataset, name, vnode.context[name])
-    return vnode.context[name]
 }
 const _parseSceneOption = (el, binding, vnode, option = {}) => {
     let result = option
@@ -66,9 +52,24 @@ const _parseSceneOption = (el, binding, vnode, option = {}) => {
     }
     return result
 }
+export const getOwnControllerName = (el, binding, vnode) => {
+    let result = el.dataset[Const.Models.Controller]
+    if (!result) {
+        result = getAttrsValue(vnode, 'vscrollmagic-controller', binding.arg || '_defaultControllerBuilder_')
+    }
+    return result
+}
+export const getOwnSceneName = (el, binding, vnode) => {
+    let result = el.dataset[Const.Models.Scene]
+    if (!result) {
+        result = getAttrsValue(vnode, 'vscrollmagic-scene', binding.arg)
+    }
+
+    return result
+}
 export const getControllerOption = (el, binding, vnode) => {
     let value = isBoolean(binding.value) ? {} : binding.value
-    let result = assign({}, Const.Options.controller, getAttrsValue(vnode, 'scrollmagic-option', {}), value)
+    let result = assign({}, Const.Options.controller, getAttrsValue(vnode, 'vscrollmagic-option', {}), value)
     if (binding.modifiers.self) {
         result.container = el
     }
@@ -81,28 +82,43 @@ export const getControllerOption = (el, binding, vnode) => {
 export const getSceneOption = (el, binding, vnode) => {
     let value = isBoolean(binding.value) ? {} : binding.value
     value = isString(value) ? { triggerElement: value } : value
-    let result = assign({}, Const.Options.scene, getAttrsValue(vnode, 'scrollmagic-option', {}), value)
+    let result = assign({}, Const.Options.scene, getAttrsValue(vnode, 'vscrollmagic-option', {}), value)
     result.triggerElement = binding.modifiers.self ? el : getTriggerElement(el, binding, vnode)
     return _parseSceneOption(el, binding, vnode, result)
 }
 export const getEnabled = (el, binding, vnode) => {
-    let result = getAttrsValue(vnode, 'scrollmagic-enabled', isBoolean(binding.value) ? binding.value : true)
+    let result = getAttrsValue(vnode, 'vscrollmagic-enabled', isBoolean(binding.value) ? binding.value : true)
+    return result
+}
+export const getScrollTo = (el, binding, vnode) => {
+    let result = getAttrsValue(vnode, 'vscrollmagic-scroll-to')
+    if (result) {
+        if (!isArray(result)) {
+            result = [result]
+        }
+    }
+    console.info(result)
+    return result
+}
+export const getReset = (el, binding, vnode) => {
+    let result = getAttrsValue(vnode, 'vscrollmagic-reset', !!binding.modifiers.reset)
     return result
 }
 export const getTweenChanges = (el, binding, vnode) => {
-    let result = getAttrsValue(vnode, 'scrollmagic-tween-changes', false)
+    let result = getAttrsValue(vnode, 'vscrollmagic-tween-changes', false)
     return result
 }
 export const getOffset = (el, binding, vnode) => {
-    let result = getAttrsValue(vnode, 'scrollmagic-offset', 0)
+    let result = getAttrsValue(vnode, 'vscrollmagic-offset', (binding.value && binding.value.offset) || 0)
     return result
 }
 export const getTriggerElement = (el, binding, vnode) => {
-    let result = getAttrsValue(vnode, 'scrollmagic-trigger-element', el)
+    let v = isString(binding.value) ? binding.value : binding.value && binding.value.triggerElement
+    let result = getAttrsValue(vnode, 'vscrollmagic-trigger-element', v || el)
     return result
 }
 export const getTriggerHook = (el, binding, vnode) => {
-    let result = getAttrsValue(vnode, 'scrollmagic-trigger-hook')
+    let result = getAttrsValue(vnode, 'vscrollmagic-trigger-hook')
     return result
 }
 
@@ -142,7 +158,7 @@ const _getTween = (el, binding, vnode) => {
     }
     return value
 }
-export const getActionValue = (el, binding, vnode) => {
+export const getActionOption = (el, binding, vnode) => {
     let value
     switch (binding.name) {
     case 'scrollmagic-pin':
@@ -157,7 +173,7 @@ export const getActionValue = (el, binding, vnode) => {
     }
     return value
 }
-export const getActionModel = (el, binding, vnode) => {
+export const getModelName = (el, binding, vnode) => {
     let value = Const.Models.Action
     switch (binding.name) {
     case 'scrollmagic-controller':

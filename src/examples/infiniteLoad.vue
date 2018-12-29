@@ -19,9 +19,9 @@ export default {
             functional: true,
             name: 'item',
             render (h, context) {
-                return <div class='item' style={{backgroundColor: context.props.color}}>item-{context.props.index}</div>
+                return <div class='item' style={{ backgroundColor: context.props.color }}>item-{context.props.index}</div>
             },
-            props: { 
+            props: {
                 index: { type: Number, default: 0 },
                 color: { type: String }
             }
@@ -41,8 +41,8 @@ export default {
         },
         createItems (amount) {
             for (var i = 0; i < amount; i++) {
-                let color = (`00000${(Math.random() *  0xFFFFFF << 0).toString(16)}`).slice(-6)
-                this.data.push({ color: `#${color}`  })
+                let color = (`00000${(Math.random() * 0xFFFFFF << 0).toString(16)}`).slice(-6)
+                this.data.push({ color: `#${color}` })
             }
         }
     }
@@ -55,4 +55,3 @@ export default {
     margin-bottom: 10px;
 }
 </style>
-

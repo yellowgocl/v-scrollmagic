@@ -1,14 +1,15 @@
+// import Context from './context'
+import { map, kebabCase, isFunction, isUndefined, assign } from 'lodash'
 import * as Directives from './directives'
-import { map, kebabCase, isFunction, assign, isUndefined } from 'lodash'
 const plugins = {
-    tween: () => require('scrollmagic/scrollmagic/minified/plugins/animation.gsap.min.js'),
-    indicators: () => require('scrollmagic/scrollmagic/minified/plugins/debug.addIndicators.min.js')
+    tween: () => require('animation.gsap'),
+    indicators: () => require('debug.addIndicators')
 }
 export default {
     install (Vue, option) {
-        // register directives for global
         option = assign({}, { indicators: true }, option)
         Vue.SCROLLMAGIC_DEBUG = isUndefined(option.debug) ? process.env.VUE_APP_V_SCROLL_MAGIC_DEBUG === 'true' : option.debug
+        // Vue.vScrollMagic = Vue.prototype.$vScrollMagic = Context.getInstance()
         map(option, (v, k) => {
             v && plugins[k] && plugins[k].apply(this)
         })

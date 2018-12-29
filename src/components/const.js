@@ -1,9 +1,10 @@
-import ScrollMagic from 'scrollmagic/scrollmagic/minified/ScrollMagic.min'
+// import ScrollMagic from 'scrollmagic/scrollmagic/minified/ScrollMagic.min'
 const SceneEvents = {
     add: 'add',
     change: 'change',
     destroy: 'destroy',
     end: 'end',
+    enter: 'enter',
     leave: 'leave',
     progress: 'progress',
     remove: 'remove',
@@ -54,4 +55,4 @@ const Options = {
     }
 }
 
-export { Models, Options, SceneEvents, ScrollMagic, SceneActions, LogLevel }
+export { Models, Options, SceneEvents, SceneActions, LogLevel }

@@ -1,23 +1,16 @@
-
-import { Tween } from '../common'
-import Vue from 'vue'
-import * as Utils from '../utils'
+import { Builder } from '../common'
 export default {
     bind (el, binding, vnode) {
+        // Builder.getAction(el, binding, vnode)
     },
     inserted (el, binding, vnode) {
-        Vue.nextTick(() => {
-            new Tween(el, binding, vnode).init()
-        })
+        Builder.getAction(el, binding, vnode).inserted(el, binding, vnode)
     },
     update (el, binding, vnode) {
-        Vue.nextTick(() => {
-            let self = Utils.getSelf(el, binding, vnode)
-            self && self.update(el, binding, vnode)
-        })
+        Builder.getAction(el, binding, vnode).update(el, binding, vnode)
     },
     unbind (el, binding, vnode) {
-        let self = Utils.getSelf(el, binding, vnode)
-        self && self.unbind(el, binding, vnode)
+        let act = Builder.getAction(el, binding, vnode)
+        act && act.unbind(el, binding, vnode)
     }
 }

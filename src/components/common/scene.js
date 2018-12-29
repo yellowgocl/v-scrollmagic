@@ -1,21 +1,15 @@
 import Base from './base'
-import * as Const from '../const'
+import ScrollMagic from 'ScrollMagic'
 import * as Utils from '../utils'
+import * as Const from '../const'
 import { map, kebabCase } from 'lodash'
-class Scene extends Base {
+export default class Scene extends Base {
     _offset
     _triggerElement
     _triggerHook
-    constructor (el, binding, vnode) {
-        super(el, binding, vnode, Const.Models.Scene)
-    }
-    getValue (old) {
-        return this.value || new Const.ScrollMagic.Scene(Utils.getSceneOption(this.el, this.binding, this.vnode))
-    }
-    canUpdate (el, binding, vnode) {
-        super.canUpdate(el, binding, vnode)
-
-        return true
+    parseValue (value) {
+        let result = (value instanceof ScrollMagic.Scene) ? value : new ScrollMagic.Scene(value)
+        return result
     }
     updateEvents (vnode) {
         if (this.value) {
@@ -27,27 +21,25 @@ class Scene extends Base {
             })
         }
     }
-    update (el, binding, vnode) {
-        el = this.el || el
-        binding = this.binding || binding
-        vnode = this.vnode || vnode
-        super.update(el, binding, vnode)
-        if (!this.getContext()) {
-            console.error('be sure to set v-scrollmagic-controller directive in any element')
+    inserted (el, binding, vnode) {
+        if (binding.modifiers.indicators && this.debug) {
+            this.value.addIndicators()
         } else {
-            if (binding.modifiers.indicators && this.debug) {
-                this.value.addIndicators()
-            }
-            this.offset = Utils.getOffset(el, binding, vnode)
-            this.triggerElement = Utils.getTriggerElement(el, binding, vnode)
-            this.triggerHook = Utils.getTriggerHook(el, binding, vnode)
-            this.value.addTo(this.getContext().value)
-            this.updateEvents(vnode)
+            this.value.removeIndicators()
         }
+        this.value.addTo(this.parent.value)
+        this.updateEvents(vnode)
     }
-    getContext () {
-        let self = this.vnode && this.vnode.context
-        return self[Utils.getControllerName(this.el, this.binding, this.vnode)]
+    unbind (el, binding, vnode) {
+        this.debug && this.value && this.value.removeIndicators()
+        this.value && this.value.destroy(true)
+        super.unbind(el, binding, vnode)
+    }
+    update (el, binding, vnode) {
+        this.offset = Utils.getOffset(el, binding, vnode)
+        this.triggerElement = Utils.getTriggerElement(el, binding, vnode)
+        this.triggerHook = Utils.getTriggerHook(el, binding, vnode)
+        super.update(el, binding, vnode)
     }
     set offset (val) {
         if (this._offset !== val) {
@@ -77,4 +69,3 @@ class Scene extends Base {
         return this._triggerHook
     }
 }
-export default Scene

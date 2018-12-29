@@ -1,17 +1,14 @@
-
-import { Controller } from '../common'
-import * as Utils from '../utils'
+import { Builder } from '../common'
 export default {
     bind (el, binding, vnode) {
-        // console.info(el)
-        new Controller(el, binding, vnode).init()
+        Builder.removeController(el, binding, vnode)
+        Builder.getController(el, binding, vnode)
+    },
+    inserted (el, binding, vnode) {
+        Builder.getController(el, binding, vnode).inserted(el, binding, vnode)
     },
     update (el, binding, vnode) {
-        let self = Utils.getSelf(el, binding, vnode)
-        self && self.update(el, binding, vnode)
+        Builder.getController(el, binding, vnode).update(el, binding, vnode)
     },
-    unbind (el, binding, vnode) {
-        let self = Utils.getSelf(el, binding, vnode)
-        self && self.unbind(el, binding, vnode)
-    }
+    unbind (el, binding, vnode) {}
 }
