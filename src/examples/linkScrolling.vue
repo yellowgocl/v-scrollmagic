@@ -50,11 +50,11 @@ export default {
         this.scrollToTarget = this.scrollTo
     },
     mounted () {
-        this.tween = TweenMax.from('.scene', 0.5, { autoAlpha: .2, scale: 0.5 })
+        this.tween = TweenMax.from('.scene', 0.5, { autoAlpha: 0.2, scale: 0.5 })
     },
     methods: {
         scrollTo (pos) {
-            TweenMax.to(window, .5, { scrollTo: { y: pos } })
+            TweenMax.to(window, 0.5, { scrollTo: { y: pos } })
         }
     }
 }
