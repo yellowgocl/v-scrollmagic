@@ -15,7 +15,6 @@ export default class Controller extends Base {
     }
     update (el, binding, vnode) {
         this.scrollTo = Utils.getScrollTo(el, binding, vnode)
-
         super.update(el, binding, vnode)
     }
     unbind (el, binding, vnode) {
@@ -23,9 +22,9 @@ export default class Controller extends Base {
         this.value && this.value.destroy(true)
     }
     set scrollTo (val) {
-        if (isEqual(this._offset, val)) {
-            this._offset = val
-            this.value && this.value.scrollTo.apply(this, val)
+        if (!isEqual(this._scrollTo, val)) {
+            this._scrollTo = val
+            this.value && this.value.scrollTo.apply(this.value, val)
         }
     }
     get scrollTo () {

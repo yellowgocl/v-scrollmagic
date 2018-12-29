@@ -97,7 +97,6 @@ export const getScrollTo = (el, binding, vnode) => {
             result = [result]
         }
     }
-    console.info(result)
     return result
 }
 export const getReset = (el, binding, vnode) => {

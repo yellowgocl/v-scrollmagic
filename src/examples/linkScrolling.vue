@@ -1,12 +1,12 @@
 <template>
-    <div class="c--container">
+    <div class="c--container" :vscrollmagic-scroll-to='scrollToTarget' v-scrollmagic-controller>
         <form class='move'>
             <fieldset>
                 <legend>anchor</legend>
                 <p
                     v-for='(item, index) in data'
                     :key='`anchor-${index}`'>
-                    <a :href="`#${item.id}`">{{item.id}}</a>
+                    <a @click='scrollToTarget="#"+item.id'>{{item.id}}</a>
                 </p>
             </fieldset>
         </form>
@@ -28,6 +28,7 @@
     </div>
 </template>
 <script>
+import 'gsap/src/uncompressed/plugins/ScrollToPlugin'
 import TweenMax from 'TweenMax'
 export default {
     data () {
@@ -41,11 +42,20 @@ export default {
                 triggerElement: '#top',
                 duration: 200
             },
-            tween: null
+            tween: null,
+            scrollToTarget: null
         }
     },
+    created () {
+        this.scrollToTarget = this.scrollTo
+    },
     mounted () {
-        this.tween = TweenMax.from('.scene', 0.5, { autoAlpha: 0, scale: 0.5 })
+        this.tween = TweenMax.from('.scene', 0.5, { autoAlpha: .2, scale: 0.5 })
+    },
+    methods: {
+        scrollTo (pos) {
+            TweenMax.to(window, .5, { scrollTo: { y: pos } })
+        }
     }
 }
 </script>
