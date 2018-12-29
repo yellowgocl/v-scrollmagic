@@ -19,7 +19,7 @@ export default {
     data () {
         return {
             options: Object.keys(Examples),
-            selectedOption: Object.keys(Examples)[5]
+            selectedOption: Object.keys(Examples)[7]
         }
     },
     filters: {

@@ -8,7 +8,7 @@
             v-for='(item, index) in data'
             :key='"panel"+index'
             v-scrollmagic-scene.self
-            :scrollmagic-offset='offset'
+            :vscrollmagic-offset='offset'
             v-scrollmagic-tween='item.tween'
             @progress='onchange'>
             <div class="content"

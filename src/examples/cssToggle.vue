@@ -1,5 +1,5 @@
 <template>
-    <div class="c-container" v-scrollmagic-controller :scrollmagic-option='controllerOption'>
+    <div class="c-container" v-scrollmagic-controller :vscrollmagic-option='controllerOption'>
         <form action="#">
             <fieldset>
                 <p v-for='(item, index) in menu' :key='index' :id='item.id'>{{item.name}}</p>
@@ -11,7 +11,6 @@
             v-scrollmagic-class-toggle='`#${item.id}`'
             v-for='(item, index) in menu'
             :key='"panel-" + index'
-            :class-toggle='"actived"'
             class="panel"
             :class='`panel-${index}`'></div>
     </div>

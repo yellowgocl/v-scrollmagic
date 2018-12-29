@@ -1,6 +1,6 @@
 {
   "name": "v-scrollmagic",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -22,12 +22,12 @@
     "*.js"
   ],
   "dependencies": {
-    "gsap": "^2.0.2",
     "lodash": "^4.17.4",
     "scrollmagic": "^2.0.6",
     "vue": "^2.5.17"
   },
   "devDependencies": {
+    "gsap": "^2.0.2",
     "@vue/cli-plugin-babel": "^3.1.1",
     "@vue/cli-plugin-eslint": "^3.1.1",
     "@vue/cli-service": "^3.1.1",
@@ -50,6 +50,7 @@
       "arrow-parens": 0,
       "generator-star-spacing": 0,
       "allowIndentationTabs": true,
+      "no-new": 0,
       "indent": [
         "error",
         4

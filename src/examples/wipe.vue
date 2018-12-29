@@ -5,9 +5,8 @@
             class="panel"
             v-scrollmagic-scene:myController.self
             v-scrollmagic-pin
-            :scrollmagic-offset='offset'
+            :vscrollmagic-offset='offset'
             v-for='(item, index) in data'
-            :scrollmagic-option='null'
             :key='index'
             :class='[`--c${index}`]'>
                 <b>{{item.text}}</b>
